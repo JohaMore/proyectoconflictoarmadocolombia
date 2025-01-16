@@ -281,7 +281,8 @@ if cases_file and victims_file and secuestros_file and victimas_secuestros_file:
                 color="Presunto Responsable",
                 title="Presuntos Responsables de Secuestros por Año",
                 labels={"Cantidad": "Número de Casos", "Año": "Año"},
-                text="Cantidad"
+                text="Cantidad",
+                
             )
             fig_responsables.update_layout(barmode="stack")
             st.plotly_chart(fig_responsables, use_container_width=True)
@@ -300,7 +301,7 @@ if cases_file and victims_file and secuestros_file and victimas_secuestros_file:
             datos_presidentes = datos_presidentes.fillna(0)
 
             # Gráfico
-            st.subheader("Presidentes y Número de Secuestros y Masacres")
+            st.subheader("Secuestros y Masacres en Colombia: Contexto Histórico y Político")
             fig_presidentes = px.bar(
                 datos_presidentes.melt(
                     id_vars=["Año", "Presidente"], 
@@ -314,8 +315,49 @@ if cases_file and victims_file and secuestros_file and victimas_secuestros_file:
                 hover_data={"Presidente": True},
                 barmode="group",
                 title="Número de Secuestros y Masacres por Presidente",
-                labels={"Cantidad": "Número de Casos", "Año": "Año"}
+                labels={"Cantidad": "Número de Casos", "Año": "Año"},
+                color_discrete_sequence=px.colors.qualitative.Pastel
             )
+            fig_presidentes.add_shape(
+            type="line",
+            x0=1998, x1=1998, y0=0, y1=fig_presidentes.data[0]['y'].max(),  # Línea para Andrés Pastrana
+            line=dict(color="red", dash="dash"),
+            xref="x", yref="y"
+            )
+            fig_presidentes.add_shape(
+            type="line",
+            x0=2002, x1=2002, y0=0, y1=fig_presidentes.data[0]['y'].max(),  # Línea para Álvaro Uribe
+            line=dict(color="blue", dash="dash"),
+            xref="x", yref="y"
+            )
+
+            fig_presidentes.add_shape(
+            type="line",
+            x0=2010, x1=2010, y0=0, y1=fig_presidentes.data[0]['y'].max(),  # Línea para Juan Manuel Santos
+            line=dict(color="green", dash="dash"),
+            xref="x", yref="y"
+            )
+
+            # Añadir anotaciones para los períodos presidenciales
+            fig_presidentes.add_annotation(
+            x=1999, y=fig_presidentes.data[0]['y'].max() * 0.95,
+            text="Andrés Pastrana",
+            showarrow=False,
+            font=dict(color="red")
+            )
+            fig_presidentes.add_annotation(
+            x=2005, y=fig_presidentes.data[0]['y'].max() * 0.95,
+            text="       Álvaro Uribe",
+            showarrow=False,
+            font=dict(color="blue")
+            )
+            fig_presidentes.add_annotation(
+            x=2014, y=fig_presidentes.data[0]['y'].max() * 0.95,
+            text="  Juan Manuel Santos",
+            showarrow=False,
+            font=dict(color="green")
+            )
+
             st.plotly_chart(fig_presidentes, use_container_width=True)
 
     except Exception as e:
